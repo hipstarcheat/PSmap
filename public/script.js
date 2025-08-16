@@ -21,9 +21,9 @@ fetch('spb_districts.geojson')
   .then(data => {
     L.geoJSON(data, {
       style: (feature) => ({
-        color: '#3388ff',       // цвет линии
+        color: '#c98200ff',       // цвет линии
         weight: 2,              // толщина линии
-        fillColor: '#3388ff',   // цвет заливки
+        fillColor: '#ffe884ff',   // цвет заливки
         fillOpacity: 0.3        // прозрачность заливки
       }),
       onEachFeature: (feature, layer) => {
@@ -41,8 +41,8 @@ fetch('spb_districts.geojson')
           // Подсветка выбранного полигона
           if (selectedLayer) {
             selectedLayer.setStyle({
-              color: '#3388ff',
-              fillColor: '#3388ff'
+              color: '#ec9025ff',
+              fillColor: '#ff3333ff'
             });
           }
           layer.setStyle({
@@ -55,11 +55,11 @@ fetch('spb_districts.geojson')
           const popupContent = `
             <b>${zoneName}</b><br>
             Аренда: ${zoneInfo.rent} ₽/мес<br>
-            Налоги и коммунальные: ${zoneInfo.taxes} ₽/мес<br>
-            Проходимость: ${zoneInfo.passability}<br>
+            Налоги и коммуналка: ${zoneInfo.taxes} ₽/мес<br>
+            Проходка: ${zoneInfo.passability}<br>
             Пешеходный трафик: ${zoneInfo.pedestrianTraffic}<br>
             Автомобильный трафик: ${zoneInfo.carTraffic}<br>
-            Аналогичных магазинов рядом: ${zoneInfo.nearbyStores}<br>
+            Конкурентов рядом: ${zoneInfo.nearbyStores}<br>
             Демография: ${zoneInfo.demographics}<br>
             Сезонность: ${zoneInfo.seasonality}<br>
             Развитие района: ${zoneInfo.development}<br>
