@@ -1,12 +1,12 @@
 // public/zonesData.js
-const zoneInfo = {
+const zonesData = {
   "Адмиралтейский": {
-    rent: "120000",                
-    taxes: "15000",                
-    passability: "Высокий",      
+    rent: 120000,
+    taxes: 15000,
+    passability: "Высокий",
     pedestrianTraffic: "Средний",
     carTraffic: "Высокий",
-    nearbyStores: "3",             
+    nearbyStores: 3,
     demographics: "Возраст 25-45, преимущественно женщины, средний доход",
     seasonality: "Лето повышенный поток",
     development: "Развивается: новые офисные здания",
