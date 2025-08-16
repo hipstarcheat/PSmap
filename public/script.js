@@ -1,10 +1,9 @@
-// Создаем карту и указываем начальную позицию (Москва)
-const map = L.map('map').setView([55.751244, 37.618423], 10);
+const map = L.map('map').setView([59.93, 30.33], 11); // Центр СПб
 
-// Добавляем слой OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+  attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
+
 
 // Обработчик клика
 map.on('click', async function(e) {
@@ -36,3 +35,38 @@ fetch('/api/zones')
             polygon.bindPopup(`${zone.name} (значение: ${zone.value})`);
         });
     });
+
+import { calculateCosts } from './zones.js';
+import { districts } from './public/data/districts.js';
+
+Object.keys(districts).forEach(districtName => {
+  fetch(districts[districtName].geojson)
+    .then(response => response.json())
+    .then(geojson => {
+      L.geoJSON(geojson, {
+        style: { color: 'red', weight: 2, fillOpacity: 0.3 },
+        onEachFeature: (feature, layer) => {
+          layer.bindPopup(`
+            <b>${districtName}</b><br>
+            Стоимость открытия: ${districts[districtName].openingCost}<br>
+            Содержание: ${districts[districtName].maintenanceCost}
+          `);
+
+          // Обработчик клика
+          layer.on('click', () => {
+            const costs = calculateCosts(districtName);
+
+            // Обновляем HTML элемент
+            const costsDiv = document.getElementById('costs');
+            costsDiv.innerHTML = `
+              <b>${districtName}</b><br>
+              Стоимость открытия: ${costs.totalOpening} ₽<br>
+              Ежемесячное содержание: ${costs.totalMonthly} ₽
+            `;
+          });
+        }
+      }).addTo(map);
+    });
+});
+
+

@@ -20,3 +20,11 @@ module.exports = [
         ]
     }
 ];
+
+export function calculateCosts(districtName) {
+  const district = districts[districtName];
+  return {
+    totalMonthly: district.maintenanceCost,
+    totalOpening: district.openingCost
+  };
+}
