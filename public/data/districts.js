@@ -1,4 +1,4 @@
-export const districts = {
+window.districts = {
   "Адмиралтейский": {
     geojson: "/data/adm.json",
     maintenanceCost: 5000,
@@ -8,6 +8,5 @@ export const districts = {
     geojson: "/data/central.json",
     maintenanceCost: 6000,
     openingCost: 220000
-  },
-  // Добавь остальные районы
+  }
 };

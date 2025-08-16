@@ -1,24 +1,47 @@
-const map = L.map('map').setView([59.93, 30.33], 11); // Центр СПб
+// Координаты центра Санкт-Петербурга
+const spbCenter = [59.93, 30.33];
 
+// Создаем карту с центром на СПб, но масштаб достаточен, чтобы видеть всю Россию
+const map = L.map('map', {
+  minZoom: 3,   // минимальный масштаб для всей России
+  maxZoom: 18
+}).setView(spbCenter, 5);
+
+// Тайлы OSM
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+// Тестовый полигон в СПб (можно потом удалить)
+L.polygon([
+  [59.95, 30.30],
+  [59.95, 30.35],
+  [59.90, 30.35],
+  [59.90, 30.30]
+], { color: 'red', fillOpacity: 0.3 }).addTo(map);
 
-// Обработчик клика
 map.on('click', async function(e) {
-    const { lat, lng } = e.latlng;
+  const { lat, lng } = e.latlng;
 
-    // Запрос на сервер для расчета
+  // Сначала тестовый вывод координат
+  const popup = L.popup()
+    .setLatLng([lat, lng])
+    .setContent(`Клик по точке: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+    .openOn(map);
+
+  // Потом запрос на сервер
+  try {
     const res = await fetch(`/api/calc?lat=${lat}&lng=${lng}`);
     const data = await res.json();
 
-    // Показываем результат
-    L.popup()
-        .setLatLng([lat, lng])
-        .setContent(`Расчёт: ${data.result}`)
-        .openOn(map);
+    // Обновляем содержимое popup с результатом
+    popup.setContent(`Расчёт: ${data.result}`);
+  } catch (err) {
+    console.error(err);
+    popup.setContent(`Ошибка при расчёте`);
+  }
 });
+
 
 // Загружаем зоны и рисуем полигоны
 fetch('/api/zones')
@@ -36,37 +59,7 @@ fetch('/api/zones')
         });
     });
 
-import { calculateCosts } from './zones.js';
-import { districts } from './public/data/districts.js';
 
-Object.keys(districts).forEach(districtName => {
-  fetch(districts[districtName].geojson)
-    .then(response => response.json())
-    .then(geojson => {
-      L.geoJSON(geojson, {
-        style: { color: 'red', weight: 2, fillOpacity: 0.3 },
-        onEachFeature: (feature, layer) => {
-          layer.bindPopup(`
-            <b>${districtName}</b><br>
-            Стоимость открытия: ${districts[districtName].openingCost}<br>
-            Содержание: ${districts[districtName].maintenanceCost}
-          `);
 
-          // Обработчик клика
-          layer.on('click', () => {
-            const costs = calculateCosts(districtName);
-
-            // Обновляем HTML элемент
-            const costsDiv = document.getElementById('costs');
-            costsDiv.innerHTML = `
-              <b>${districtName}</b><br>
-              Стоимость открытия: ${costs.totalOpening} ₽<br>
-              Ежемесячное содержание: ${costs.totalMonthly} ₽
-            `;
-          });
-        }
-      }).addTo(map);
-    });
-});
 
 

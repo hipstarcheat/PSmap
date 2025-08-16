@@ -27,9 +27,6 @@ app.get('/api/calc', (req, res) => {
     res.json({ result: zoneValue });
 });
 
-app.listen(3000, () => {
-    console.log('Сервер запущен: http://localhost:3000');
-});
 
 app.get('/api/zones', (req, res) => {
     res.json(zones);
